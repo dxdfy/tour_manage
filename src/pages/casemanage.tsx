@@ -18,7 +18,17 @@ function CaseManage() {
         axios.get('http://127.0.0.1:3007/my/task/cates')
             .then(response => {
                 console.log(response.data);
-                const filteredData = selectedStatus === '全部状态' ? response.data.data : response.data.data.filter(item => item.status === selectedStatus);
+                // 根据 query.name 进行筛选
+                let filteredData = response.data.data;
+
+                if (query.name) {
+                    filteredData = filteredData.filter(item => item.name.includes(query.name));
+                }
+
+                // 根据 selectedStatus 进行筛选
+                if (selectedStatus !== '全部状态') {
+                    filteredData = filteredData.filter(item => item.status === selectedStatus);
+                }
                 console.log(filteredData);
                 setData(filteredData);
             })
@@ -32,24 +42,24 @@ function CaseManage() {
         }
     }, [isShow])
     const handleDelete = async (r) => {
-        const permission =sessionStorage.getItem('permission');
+        const permission = sessionStorage.getItem('permission');
         console.log(permission);
-        if(permission === 'audit'){
+        if (permission === 'audit') {
             message.error('你没有删除权限');
         }
-        else{
-            if (r.is_delete=== 1) {
+        else {
+            if (r.is_delete === 1) {
                 message.success('该游记已经被删除');
             } else {
                 const storedToken = sessionStorage.getItem('token');
                 axios.defaults.headers.common['Authorization'] = storedToken;
-    
+
                 const config = {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 };
-    
+
                 try {
                     const response = await axios.get('http://127.0.0.1:3007/my/task/delete/' + r.id, config);
                     console.log(response.data);
@@ -59,11 +69,11 @@ function CaseManage() {
                 } catch (error) {
                     console.error('Error:', error);
                 }
-    
+
                 setQuery({});
             }
         }
-       
+
     };
     const handlePass = async (r) => {
         if (r.status === '已通过') {
@@ -99,8 +109,7 @@ function CaseManage() {
             // }
             >
                 <Form layout="inline" onFinish={(v) => {
-                    console.log(selectedStatus)
-                    setQuery({})
+                    setQuery(v)
                     message.success('查询成功')
                 }}>
                     <Form.Item label="名称" name='name'>
@@ -140,7 +149,7 @@ function CaseManage() {
                             }, {
                                 title: '是否删除',
                                 dataIndex: 'is_delete',
-                            },{
+                            }, {
                                 title: '操作',
                                 align: 'center',
                                 width: 100,
