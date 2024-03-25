@@ -27,7 +27,7 @@ function Login() {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     };
-    await axios.post('http://127.0.0.1:3007/api/register', new URLSearchParams(postData), config)
+    await axios.post('http://127.0.0.1:3007/back/register', new URLSearchParams(postData), config)
       .then(response => {
         console.log(response.data);
         if (response.data.message === '注册成功') {
@@ -128,7 +128,7 @@ function Login() {
                   'Content-Type': 'application/x-www-form-urlencoded'
                 }
               };
-              axios.post('http://127.0.0.1:3007/api/login', new URLSearchParams(postData), config)
+              axios.post('http://127.0.0.1:3007/back/login', new URLSearchParams(postData), config)
                 .then(response => {
                   console.log(response.data);
                   if (response.data.message === '登录成功') {
