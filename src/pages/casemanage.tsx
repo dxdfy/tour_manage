@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Popconfirm, Card, Button, Form, Input, Table, Modal, message, Space, Select, Tooltip } from 'antd'
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined, ZoomInOutlined, CheckOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import axios from "axios";
-import { useNavigate} from "react-router-dom";
-import ReactPlayer from 'react-player';
+import LazyLoad from 'react-lazyload';
 import Show from "./show";
 const { Option } = Select;
 function CaseManage() {
@@ -14,8 +13,10 @@ function CaseManage() {
     const [data, setData] = useState([]);
     const [currentId, setCurrentId] = useState('');
     const [selectedStatus, setSelectedStatus] = useState('全部状态');
-    const [isInfoShow,setIsInfoShow] =useState(false);
-    const navigate= useNavigate();
+    const [isInfoShow, setIsInfoShow] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    
     useEffect(() => {
         const storedToken = sessionStorage.getItem('token');
         console.log(storedToken);
@@ -41,12 +42,15 @@ function CaseManage() {
             .catch(error => {
                 console.error('Error:', error);
             });
-    }, [query])
+    }, [query, selectedStatus])
     useEffect(() => {
         if (!isShow) {
             setCurrentId('');
         }
     }, [isShow])
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
     const handleDelete = async (r) => {
         const permission = sessionStorage.getItem('permission');
         console.log(permission);
@@ -104,11 +108,10 @@ function CaseManage() {
             setQuery({});
         }
     };
-    const handleViewContent = (r) => {
-        // Navigate to the child page with route parameters or state
-        navigate(`/index/case/caseshow?task=${r}`)
-        message.success('查看详情');
-    };
+    
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const currentData = data.slice(startIndex, endIndex);
     return (
         <>
             <Card
@@ -141,85 +144,99 @@ function CaseManage() {
                 </Form>
 
                 <Table
-                    dataSource={data}
+                    dataSource={currentData}
                     rowKey='id'
+                    pagination={{
+                        current: currentPage,
+                        pageSize: pageSize,
+                        total: data.length,
+                        onChange: handlePageChange,
+                    }}
                     columns={
-                        [
-                            {
-                                title: '编号',
-                                dataIndex: 'id',
-                            }, {
-                                title: '名称',
-                                dataIndex: 'name',
-                            }, {
-                                title: '游记标题',
-                                dataIndex: 'title',
-                            }, {
-                                title: '状态',
-                                dataIndex: 'status',
-                            }, {
-                                title: '是否删除',
-                                dataIndex: 'is_delete',
-                            }, {
-                                title: '操作',
-                                align: 'center',
-                                width: 100,
-                                render(v, r: any) {
-                                    return <Space>
-                                        {/* <Button type='primary' icon={<EditOutlined />} onClick={() => {
+                        [{
+                            title: '封面',
+                            dataIndex: 'pic_urls',
+                            render: (picUrls: string[]) => (
+                                <div>
+                                    <img src={picUrls[0]} alt={'Pic'} style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
+                                </div>
+                            ),
+                        },
+                        {
+                            title: '编号',
+                            dataIndex: 'id',
+                        }, {
+                            title: '名称',
+                            dataIndex: 'name',
+                        }, {
+                            title: '游记标题',
+                            dataIndex: 'title',
+                        }, {
+                            title: '状态',
+                            dataIndex: 'status',
+                        }, {
+                            title: '是否删除',
+                            dataIndex: 'is_delete',
+                        }, {
+                            title: '操作',
+                            align: 'center',
+                            width: 100,
+                            render(v, r: any) {
+                                return <Space>
+                                    {/* <Button type='primary' icon={<EditOutlined />} onClick={() => {
                                             setIsShow(true)
                                             setCurrentId(r.id)
                                             // console.log(r.id)
                                             // myForm.setFieldsValue(r)
                                         }} /> */}
-                                        <Tooltip title="拒绝">
+                                    <Tooltip title="拒绝">
+                                        <Button
+                                            type='primary'
+                                            icon={<ExclamationCircleOutlined />}
+                                            onClick={() => {
+                                                setIsShow(true)
+                                                setCurrentId(r.id)
+                                            }}
+                                        />
+                                    </Tooltip>
+                                    <Tooltip title="查看游记内容">
+                                        <Button type='primary' icon={<ZoomInOutlined />} onClick={() => {
+                                            setSelectedRowData(r);
+                                            setIsInfoShow(true)
+                                            // myForm.setFieldsValue(r)
+                                        }} />
+                                    </Tooltip>
+                                    <Tooltip title="通过">
+                                        <Popconfirm
+                                            title="确认通过审核吗？"
+                                            onConfirm={() => handlePass(r)}
+                                            okText="是"
+                                            cancelText="否"
+                                        >
                                             <Button
                                                 type='primary'
-                                                icon={<ExclamationCircleOutlined />}
-                                                onClick={() => {
-                                                    setIsShow(true)
-                                                    setCurrentId(r.id)
-                                                }}
+                                                icon={<CheckOutlined />}
+                                                onClick={() => { }}
                                             />
-                                        </Tooltip>
-                                        <Tooltip title="查看游记内容">
-                                            <Button type='primary' icon={<ZoomInOutlined />} onClick={() => {
-                                                setSelectedRowData(r);
-                                                setIsInfoShow(true)
-                                                // myForm.setFieldsValue(r)
-                                            }} />
-                                        </Tooltip>
-                                        <Tooltip title="通过">
-                                            <Popconfirm
-                                                title="确认通过审核吗？"
-                                                onConfirm={() => handlePass(r)}
-                                                okText="是"
-                                                cancelText="否"
-                                            >
-                                                <Button
-                                                    type='primary'
-                                                    icon={<CheckOutlined />}
-                                                    onClick={() => { }}
-                                                />
-                                            </Popconfirm>
-                                        </Tooltip>
-                                        <Tooltip title="删除">
-                                            <Popconfirm
-                                                title="确定要删除吗？"
-                                                onConfirm={() => handleDelete(r)}
-                                                okText="是"
-                                                cancelText="否"
-                                            >
-                                                <Button
-                                                    type='primary'
-                                                    icon={<DeleteOutlined />}
-                                                    danger
-                                                />
-                                            </Popconfirm>
-                                        </Tooltip>
-                                    </Space>
-                                }
+                                        </Popconfirm>
+                                    </Tooltip>
+                                    <Tooltip title="删除">
+                                        <Popconfirm
+                                            title="确定要删除吗？"
+                                            onConfirm={() => handleDelete(r)}
+                                            okText="是"
+                                            cancelText="否"
+                                        >
+                                            <Button
+                                                type='primary'
+                                                icon={<DeleteOutlined />}
+                                                danger
+                                            />
+                                        </Popconfirm>
+                                    </Tooltip>
+                                </Space>
                             }
+                        }
                         ]
                     } />
             </Card>
@@ -263,7 +280,7 @@ function CaseManage() {
                         setCurrentId('');
                         setQuery({});//重置查询条件取数据
                     }}
-                    
+
                 >
                     <Form.Item label='拒绝理由' name='reason' rules={
                         [
@@ -286,7 +303,7 @@ function CaseManage() {
                 destroyOnClose
                 footer={null}
             >
-                <Show task={selectedRowData}/>
+                <Show task={selectedRowData} />
             </Modal>
         </>
 
