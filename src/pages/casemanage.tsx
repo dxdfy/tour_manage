@@ -2,14 +2,20 @@ import React, { useEffect, useState } from "react"
 import { Popconfirm, Card, Button, Form, Input, Table, Modal, message, Space, Select, Tooltip } from 'antd'
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined, ZoomInOutlined, CheckOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import axios from "axios";
+import { useNavigate} from "react-router-dom";
+import ReactPlayer from 'react-player';
+import Show from "./show";
 const { Option } = Select;
 function CaseManage() {
     const [isShow, setIsShow] = useState(false);//控制modal
-    const [myForm] = Form.useForm();//获取表单元素实例
+    // const [myForm] = Form.useForm();//获取表单元素实例
+    const [selectedRowData, setSelectedRowData] = useState(null);
     const [query, setQuery] = useState({});
     const [data, setData] = useState([]);
     const [currentId, setCurrentId] = useState('');
     const [selectedStatus, setSelectedStatus] = useState('全部状态');
+    const [isInfoShow,setIsInfoShow] =useState(false);
+    const navigate= useNavigate();
     useEffect(() => {
         const storedToken = sessionStorage.getItem('token');
         console.log(storedToken);
@@ -98,6 +104,11 @@ function CaseManage() {
             setQuery({});
         }
     };
+    const handleViewContent = (r) => {
+        // Navigate to the child page with route parameters or state
+        navigate(`/index/case/caseshow?task=${r}`)
+        message.success('查看详情');
+    };
     return (
         <>
             <Card
@@ -173,7 +184,9 @@ function CaseManage() {
                                         </Tooltip>
                                         <Tooltip title="查看游记内容">
                                             <Button type='primary' icon={<ZoomInOutlined />} onClick={() => {
-                                                message.success('查看详情')
+                                                setSelectedRowData(r);
+                                                setIsInfoShow(true)
+                                                // myForm.setFieldsValue(r)
                                             }} />
                                         </Tooltip>
                                         <Tooltip title="通过">
@@ -218,7 +231,6 @@ function CaseManage() {
                 destroyOnClose
                 onOk={() => {
                     // message.success('上传成功');
-                    myForm.submit();
                 }}
             >
                 <Form
@@ -251,7 +263,7 @@ function CaseManage() {
                         setCurrentId('');
                         setQuery({});//重置查询条件取数据
                     }}
-                    form={myForm}
+                    
                 >
                     <Form.Item label='拒绝理由' name='reason' rules={
                         [
@@ -265,6 +277,16 @@ function CaseManage() {
                     </Form.Item>
 
                 </Form>
+            </Modal>
+            <Modal
+                title="查看详情"
+                open={isInfoShow}
+                maskClosable={false}
+                onCancel={() => setIsInfoShow(false)}
+                destroyOnClose
+                footer={null}
+            >
+                <Show task={selectedRowData}/>
             </Modal>
         </>
 

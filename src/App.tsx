@@ -8,6 +8,7 @@ function App() {
     <MyLayout>
       <Routes>
         <Route path='case' element={<CaseManage />} />
+        {/* <Route path='case/caseshow' element={<Show />}/> */}
       </Routes>
     </MyLayout>
       
