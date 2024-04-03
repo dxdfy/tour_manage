@@ -7,7 +7,7 @@ import Show from "./show";
 const { Option } = Select;
 function CaseManage() {
     const [isShow, setIsShow] = useState(false);//控制modal
-    // const [myForm] = Form.useForm();//获取表单元素实例
+    const [myForm] = Form.useForm();//获取表单元素实例
     const [selectedRowData, setSelectedRowData] = useState(null);
     const [query, setQuery] = useState({});
     const [data, setData] = useState([]);
@@ -247,6 +247,7 @@ function CaseManage() {
                 onCancel={() => setIsShow(false)}
                 destroyOnClose
                 onOk={() => {
+                    myForm.submit();
                     // message.success('上传成功');
                 }}
             >
@@ -280,6 +281,7 @@ function CaseManage() {
                         setCurrentId('');
                         setQuery({});//重置查询条件取数据
                     }}
+                    form={myForm}
 
                 >
                     <Form.Item label='拒绝理由' name='reason' rules={

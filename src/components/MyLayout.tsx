@@ -39,6 +39,10 @@ const MyLayout = ({children}: any) => {
               key: '/index/case',
               icon: <VideoCameraOutlined />,
               label: '审核列表',
+            },{
+              key: '/index/user',
+              icon: <UserOutlined />,
+              label: '人员管理',
             },
             
           ]}
