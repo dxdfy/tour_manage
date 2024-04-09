@@ -27,7 +27,7 @@ function CaseManage() {
                 console.log(response.data);
                 // 根据 query.name 进行筛选
                 let filteredData = response.data.data;
-
+                console.log('query',query.name);
                 if (query.name) {
                     filteredData = filteredData.filter(item => item.name.includes(query.name));
                 }
@@ -133,7 +133,7 @@ function CaseManage() {
                         <Button htmlType="submit" type="primary" icon={<SearchOutlined />} />
                     </Form.Item>
                     <Form.Item>
-                        <Select defaultValue="待审核" style={{ width: 120 }} onChange={value => setSelectedStatus(value)}>
+                        <Select defaultValue="全部状态" style={{ width: 120 }} onChange={value => setSelectedStatus(value)}>
                             <Option value="全部状态">全部状态</Option>
                             <Option value="待审核">待审核</Option>
                             <Option value="已通过">已通过</Option>

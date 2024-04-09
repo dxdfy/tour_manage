@@ -34,6 +34,13 @@ function Login() {
           message.success('注册成功');
           close();
         }
+        if (response.data.status === 1){
+          if (response.data.message === '用户名重复') {
+            message.error('用户名重复');
+          }else{
+            message.error('用户名或密码不符合格式');
+          }
+        }
       })
       .catch(error => {
         console.error('Error:', error);
