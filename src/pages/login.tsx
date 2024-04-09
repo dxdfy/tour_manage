@@ -31,7 +31,8 @@ function Login() {
       .then(response => {
         console.log(response.data);
         if (response.data.message === '注册成功') {
-          message.success('注册成功')
+          message.success('注册成功');
+          close();
         }
       })
       .catch(error => {

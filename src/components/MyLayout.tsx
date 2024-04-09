@@ -18,7 +18,24 @@ const MyLayout = ({children}: any) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-  
+  const permission = sessionStorage.getItem('permission');
+  const menuItems = [
+    {
+      key: '/index/case',
+      icon: <VideoCameraOutlined />,
+      label: '审核列表',
+    },
+  ];
+
+  // 如果权限为 'audit'，给出提示，不显示人员管理页
+  if (permission !== 'audit') {
+    // 添加人员管理菜单项
+    menuItems.push({
+      key: '/index/user',
+      icon: <UserOutlined />,
+      label: '人员管理',
+    });
+  }
   return (
     <Layout style={{width: '100vw',height: '100vh'}}
             id='layout'
@@ -34,18 +51,19 @@ const MyLayout = ({children}: any) => {
           onClick={({key})=>{
              navigate(key);
           }}
-          items={[
-            {
-              key: '/index/case',
-              icon: <VideoCameraOutlined />,
-              label: '审核列表',
-            },{
-              key: '/index/user',
-              icon: <UserOutlined />,
-              label: '人员管理',
-            },
+          items={menuItems}
+          // items={[
+          //   {
+          //     key: '/index/case',
+          //     icon: <VideoCameraOutlined />,
+          //     label: '审核列表',
+          //   },{
+          //     key: '/index/user',
+          //     icon: <UserOutlined />,
+          //     label: '人员管理',
+          //   },
             
-          ]}
+          // ]}
         />
       </Sider>
       <Layout>

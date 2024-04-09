@@ -130,6 +130,9 @@ function CaseManage() {
                         <Input placeholder="请输入关键词"></Input>
                     </Form.Item>
                     <Form.Item>
+                        <Button htmlType="submit" type="primary" icon={<SearchOutlined />} />
+                    </Form.Item>
+                    <Form.Item>
                         <Select defaultValue="待审核" style={{ width: 120 }} onChange={value => setSelectedStatus(value)}>
                             <Option value="全部状态">全部状态</Option>
                             <Option value="待审核">待审核</Option>
@@ -137,9 +140,6 @@ function CaseManage() {
                             <Option value="已拒绝">已拒绝</Option>
                             {/* <Option value="已删除">已删除</Option> */}
                         </Select>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button htmlType="submit" type="primary" icon={<SearchOutlined />} />
                     </Form.Item>
                 </Form>
 
