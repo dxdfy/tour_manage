@@ -1,6 +1,6 @@
-# 项目概述
+## 项目概述
 
-该项目是一个使用 React、TypeScript 和 Vite 构建的待办事项应用程序。
+该项目是一个使用 React、TypeScript 和 Vite 构建的旅游日记平台审核应用程序。
 
 ## 技术栈
 
@@ -10,11 +10,11 @@
 - TypeScript: 一种构建在 JavaScript 基础上的编程语言。
 - Vite: 下一代前端工具，用于快速构建现代化的 Web 应用程序。
 
-# 项目部署步骤
+## 项目部署步骤
 
 本文档提供了将您的 React TypeScript Vite 项目部署到生产环境的步骤。
 
-## 步骤一：克隆仓库
+### 步骤一：克隆仓库
 
 ```bash
 git clone git@github.com:dxdfy/tour_manage.git
