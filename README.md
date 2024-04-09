@@ -21,14 +21,12 @@ git clone git@github.com:dxdfy/tour_manage.git
 
 ### 步骤二：安装依赖
 
-```bash
 npm install
 
 ### 步骤三：本地开发
 
-```bash
 npm run dev
-
+```
 ## 文件结构
 
 项目的文件结构如下：
